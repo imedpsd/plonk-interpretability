@@ -192,10 +192,6 @@ vision_model.config.output_attentions = True
 The repository includes attention visualizations showing:
 - Attention heatmaps overlaid on original images
 - Statistical distributions of attention patterns
-- Comparative analysis across different countries
-- Examples of focused vs. diffuse attention patterns
-
-See `attention_analysis/` folder for generated visualizations from 50,000 images.
 
 ## 📈 Future Directions
 
