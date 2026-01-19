@@ -1,0 +1,28 @@
+# Core dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.24.0
+pandas>=2.0.0
+pillow>=9.5.0
+
+# PLONK model
+plonk @ git+https://github.com/nicolas-dufour/plonk.git
+
+# HuggingFace
+transformers>=4.30.0
+huggingface-hub>=0.16.0
+
+# Machine Learning
+scikit-learn>=1.3.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+scipy>=1.10.0
+
+# Progress bars
+tqdm>=4.65.0
+
+# Jupyter (optional, for running notebooks)
+jupyter>=1.0.0
+ipykernel>=6.23.0
