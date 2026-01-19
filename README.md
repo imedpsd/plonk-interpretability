@@ -217,17 +217,7 @@ Potential extensions of this research:
 
 If you use this code or findings in your research, please cite:
 
-```bibtex
-@misc{boukhari2026plonk_interpretability,
-  author = {Boukhari, Imed-Eddine},
-  title = {Interpreting PLONK: Geographic Knowledge in Vision Encoders},
-  year = {2026},
-  publisher = {GitHub},
-  howpublished = {\url{https://github.com/imedpsd/plonk-interpretability}}
-}
-```
-
-Also please cite the original PLONK paper:
+Please cite the original PLONK paper:
 
 ```bibtex
 @article{dufour2024plonk,
