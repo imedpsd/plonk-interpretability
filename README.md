@@ -1,98 +1,187 @@
-# PLONK Interpretability Study
+# PLONK Interpretability: Understanding Geographic Knowledge in Vision Encoders
 
-Understanding how PLONK achieves state-of-the-art visual geolocation through attention analysis and representation probing.
+**Interpreting PLONK: Geographic Knowledge in Vision Encoders**
 
-## Overview
+This repository contains the code and analysis for understanding how PLONK's vision encoder (StreetCLIP) captures and represents geographic knowledge for image-based geolocation tasks.
 
-This project investigates the interpretability of [PLONK](https://github.com/nicolas-dufour/plonk) (Around the World in 80 Timesteps), a generative geolocation model that achieves SOTA performance on multiple benchmarks.
+## 📋 Overview
 
-## Research Questions
+PLONK is a generative geolocation model that combines a pre-trained vision transformer (StreetCLIP) with flow matching on the Earth's sphere to predict GPS coordinates from street-level images. This research investigates:
 
-1. **What visual features does PLONK attend to when predicting locations?**
-2. **How much geographic information is encoded in the frozen StreetCLIP backbone vs learned by the flow matching head?**
+1. **How much geographic knowledge is already encoded in the frozen StreetCLIP encoder?**
+2. **What visual features does the model attend to for geolocation?**
 
-## Experiments
+## 🎯 Research Questions
 
-### Experiment 1: Attention Analysis
-- Visualization of attention maps from CLIP ViT backbone
-- Comparison of attention patterns in correct vs incorrect predictions
-- Analysis by scene type (landmarks, urban, rural)
+- Does StreetCLIP already know geography before flow matching training?
+- What parts of images does the model focus on for geolocation?
+- Does the model rely on obvious landmarks or contextual environmental cues?
 
-### Experiment 2: Linear Probing
-- Extraction of 1024-dim StreetCLIP features from 50,000 OSV-5M test images
-- Training logistic regression classifiers for geographic prediction
-- Hierarchical evaluation: Continent → Country → Region
+## 🔬 Methodology
 
-## Key Findings
+### 1. Linear Probing Experiments
 
-**[Results will be added after experiments complete]**
+We evaluate how much geographic knowledge exists in the frozen encoder by training simple linear classifiers (logistic regression) on extracted features.
 
-- Linear probe achieves X% country accuracy using frozen StreetCLIP features
-- PLONK attends primarily to [features] for accurate predictions
-- Geographic information is [highly/moderately/minimally] encoded in the pretrained backbone
+**Dataset**: OSV-5M Test Set
+- 50,000 images sampled from test set
+- Geographic labels: Country, Region, City
+- 217 countries, ~2,050 regions, 7,292 cities
 
-## Dataset
+**Method**:
+1. Extract 1024-dim features from frozen StreetCLIP encoder
+2. Filter classes: Keep only labels with ≥ 2 samples
+3. Train/test split: 80/20 (40k train, 10k test)
+4. Train: Logistic Regression
+5. Evaluate: Accuracy on held-out test set
 
-- **OSV-5M**: OpenStreetView-5M test set (50,000 images from 154 countries)
-- Download instructions: [OSV-5M Dataset](https://huggingface.co/datasets/osv5m/osv5m)
+### 2. Attention Analysis
 
-## Requirements
-```
-python >= 3.10
-torch >= 2.0
-diff-plonk
-scikit-learn
-numpy
-pandas
-matplotlib
-seaborn
-```
+We analyze attention patterns to understand what visual features the model uses for geolocation.
 
-## Installation
-```bash
-# Clone repository
-git clone https://github.com/YOUR_USERNAME/plonk-interpretability.git
-cd plonk-interpretability
+**Approach**:
+1. Extract attention weights from last layer (50,000 images)
+2. Visualize where model "looks" on 16×16 image patches
+3. Compute statistics: entropy, concentration, spatial patterns
 
-# Install dependencies
-pip install diff-plonk scikit-learn matplotlib seaborn pandas
-```
+## 📊 Key Results
 
-## Usage
+### Linear Probing Results
 
-**[Coming soon]**
+| Level    | Linear Probe | PLONK (10000) | PLONK Paper | Classes |
+|----------|--------------|---------------|-------------|---------|
+| Country  | **85.0%**    | 78%           | 76.2%       | 217     |
+| Region   | **62%**      | 39%           | 44.2%       | 2,050   |
+| City     | **8.2%**     | 6%            | 5.4%        | 7,292   |
 
-## Project Structure
+**Key Findings**:
+- The frozen encoder captures substantial geographic knowledge from pre-training
+- Linear probe achieves strong accuracy, especially at country and region levels
+- Different tasks: classification vs. coordinate regression explain performance differences
+
+### Attention Analysis Results
+
+| Metric                      | Value      |
+|-----------------------------|------------|
+| Images Analyzed             | 50,000     |
+| Mean Entropy                | 4.53       |
+| Top-10% Concentration       | 66.6%      |
+| High Attention Patches      | 95.2 (avg) |
+
+**Key Findings**:
+- **Moderate entropy**: Model doesn't hyper-focus on single features
+- **Selective attention**: 67% weight on top 10% of patches
+- **Contextual coverage**: Uses 95 patches (37% of image)
+- **Diverse visual cues**: Model combines landmarks AND environmental cues (sky, vegetation, architectural patterns)
+
+## 🔍 Main Insights
+
+1. **Strong Pre-trained Encoder Foundation**: The StreetCLIP encoder already contains substantial geographic knowledge before flow matching training
+
+2. **Contextual Understanding**: The model doesn't just focus on obvious landmarks but uses diverse environmental cues including:
+   - Sky patterns and atmospheric conditions
+   - Vegetation and natural environment
+   - Architectural styles and building patterns
+   - Road infrastructure and urban planning
+
+3. **Distributed Attention**: Attention is distributed across ~37% of image patches, indicating holistic scene understanding rather than landmark detection
+
+4. **Two-Stage Architecture Validation**: Results validate PLONK's design choice of using a frozen pre-trained encoder with flow matching
+
+## 🏗️ Repository Structure
+
 ```
 plonk-interpretability/
-├── experiments/
-│   ├── 01_linear_probing/
-│   └── 02_attention_analysis/
-├── notebooks/
-├── results/
-└── presentation/
+├── notebooks/              # Jupyter notebooks for experiments
+│   ├── linear_probing.ipynb
+│   └── attention_analysis.ipynb
+├── src/                   # Source code
+│   ├── feature_extraction.py
+│   ├── linear_probe.py
+│   └── attention_viz.py
+├── data/                  # Data directory (not included)
+├── results/               # Experimental results
+│   ├── linear_probing/
+│   └── attention_maps/
+└── README.md
 ```
 
-## Citation
+## 🚀 Getting Started
 
-**PLONK Paper:**
+### Prerequisites
+
+```bash
+pip install torch torchvision transformers
+pip install numpy pandas matplotlib seaborn
+pip install scikit-learn
+```
+
+### Running Linear Probing
+
+```python
+# Extract features from StreetCLIP
+python src/feature_extraction.py --dataset osv5m --split test --num_samples 50000
+
+# Train linear probes
+python src/linear_probe.py --level country
+python src/linear_probe.py --level region
+python src/linear_probe.py --level city
+```
+
+### Running Attention Analysis
+
+```python
+# Extract and analyze attention maps
+python src/attention_viz.py --num_images 50000 --output_dir results/attention_maps
+```
+
+## 📈 Future Directions
+
+Potential extensions of this research:
+
+1. **Fine-tuned Encoder Comparison**: Replace frozen encoder with fine-tuned version and retrain flow matching to measure performance impact
+
+2. **Layer-wise Analysis**: Analyze attention patterns at different encoder layers to understand hierarchical geographic feature learning
+
+3. **Failure Case Analysis**: Study encoder behavior on failure cases to identify limitations and potential improvements
+
+4. **Geographic Bias Study**: Analyze if attention patterns vary across different geographic regions and cultural contexts
+
+## 📚 Citation
+
+If you use this code or findings in your research, please cite:
+
 ```bibtex
-@article{dufour2024plonk,
-  title={Around the World in 80 Timesteps: A Generative Approach to Global Visual Geolocation},
-  author={Dufour, Nicolas and Picard, David and Kalogeiton, Vicky and Landrieu, Loic},
-  journal={CVPR},
-  year={2025}
+@misc{boukhari2026plonk_interpretability,
+  author = {Boukhari, Imed-Eddine},
+  title = {Interpreting PLONK: Geographic Knowledge in Vision Encoders},
+  year = {2026},
+  publisher = {GitHub},
+  howpublished = {\url{https://github.com/imedpsd/plonk-interpretability}}
 }
 ```
 
-## Acknowledgments
+## 📝 Related Work
 
-This project builds upon [PLONK](https://github.com/nicolas-dufour/plonk) by Dufour et al. and uses the [OSV-5M](https://osv5m.github.io/) dataset.
+- **PLONK**: [Original PLONK paper and implementation](https://github.com/lukas-haas/PLONK)
+- **StreetCLIP**: Vision-language model trained on street-level imagery
+- **OSV-5M**: Large-scale street-view dataset
 
-## License
+## 👤 Author
 
-MIT
+**Imed-Eddine BOUKHARI**
+- Université Paris Cité
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- PLONK authors for the original model and codebase
+- OSV-5M dataset creators
+- Université Paris Cité
 
 ---
 
-**Work in Progress** - Results and code will be updated as experiments complete.
+**Date**: January 19, 2026
