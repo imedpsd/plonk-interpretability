@@ -174,14 +174,6 @@ axes[2].axis('off')
 plt.tight_layout()
 ```
 
-### Color Map Choice
-
-We use the **'hot'** colormap because:
-- Bright (yellow/white) = High attention
-- Dark (red/black) = Low attention
-- Intuitive: "hot spots" are important regions
-- Works well with transparency overlays
-
 ## 📈 Results Summary
 
 ### Overall Statistics (50,000 images)
@@ -192,6 +184,8 @@ We use the **'hot'** colormap because:
 | Top-10% Concentration        | 66.6% | 8.2% | 42%  | 88%  |
 | High Attention Patches       | 95.2  | 18.7 | 38   | 156  |
 | Attention Spread (Std Dev)   | 0.041 | 0.009| 0.018| 0.076|
+
+![Attention Analysis Overview](results/figures/diverse_20_examples.png) 
 
 ### Key Findings
 
