@@ -185,8 +185,7 @@ plt.tight_layout()
 | High Attention Patches       | 95.2  | 18.7 | 38   | 156  |
 | Attention Spread (Std Dev)   | 0.041 | 0.009| 0.018| 0.076|
 
-![Attention Analysis Overview](results/figures/diverse_20_examples.png) 
-
+![Attention Analysis Overview](../results/figures/diverse_20_examples.png)
 ### Key Findings
 
 1. **Consistent Attention Patterns**
