@@ -241,9 +241,6 @@ This work is built upon the excellent [PLONK model](https://github.com/nicolas-d
 - Providing the pre-trained StreetCLIP encoder
 - Making their codebase accessible and well-documented
 
-Additional thanks to:
-- OSV-5M dataset creators for providing high-quality geolocation data
-- Université Paris Cité for supporting this research
 
 ## 👤 Author
 
@@ -251,10 +248,5 @@ Additional thanks to:
 Université Paris Cité  
 January 2026
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
 
 **Note**: This is an interpretability study of the PLONK model. For the original PLONK implementation and training code, please visit the [official PLONK repository](https://github.com/nicolas-dufour/plonk).
