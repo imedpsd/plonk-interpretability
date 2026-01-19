@@ -53,7 +53,7 @@ We analyze attention patterns from the Vision Transformer to understand what vis
 - Analyze last layer's attention weights averaged across all attention heads
 
 See [Attention Analysis README](attention_analysis/README.md) for detailed documentation.
-
+![Attention Analysis Overview](results/figures/attention_analysis_overview.png)
 ## 📊 Key Results
 
 ### Linear Probing Results
